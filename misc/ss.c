@@ -2602,64 +2602,85 @@ static void tcp_stats_print(struct tcpstat *s)
 	char b1[64];
 
 	if (s->has_ts_opt)
-		out(" ts");
+		out(" ts:on");
+	else
+		out(" ts:off");
+
 	if (s->has_usec_ts_opt)
-		out(" usec_ts");
+		out(" usec_ts:on");
+	else
+		out(" usec_ts:off");
+
 	if (s->has_sack_opt)
-		out(" sack");
+		out(" sack:on");
+	else
+	 	out(" sack:off");
+
 	if (s->has_ecn_opt)
-		out(" ecn");
+		out(" ecn:on");
+	else
+	 	out(" ecn:off");
+
 	if (s->has_ecnseen_opt)
-		out(" ecnseen");
+		out(" ecnseen:on");
+	else
+	 	out( " ecnseen:off");
+
 	if (s->has_fastopen_opt)
-		out(" fastopen");
+		out(" fastopen:on");
+	else
+		out(" fastopen:off");
+
 	if (s->cong_alg[0])
-		out(" %s", s->cong_alg);
+		out(" congestion:%s", s->cong_alg);
+	else
+		out(" congestion:unknown");
+
 	if (s->has_wscale_opt)
 		out(" wscale:%d,%d", s->snd_wscale, s->rcv_wscale);
-	if (s->rto)
-		out(" rto:%g", s->rto);
-	if (s->backoff)
-		out(" backoff:%u", s->backoff);
-	if (s->rtt)
-		out(" rtt:%g/%g", s->rtt, s->rttvar);
-	if (s->ato)
-		out(" ato:%g", s->ato);
+	else
+		out(" wscale:1,1");
 
-	if (s->qack)
-		out(" qack:%d", s->qack);
+	out(" rto:%g", s->rto);
+
+	out(" backoff:%u", s->backoff);
+
+	out(" rtt:%g/%g", s->rtt, s->rttvar);
+
+	out(" ato:%g", s->ato);
+
 	if (s->qack & 1)
-		out(" bidir");
+		out(" qack:bidir");
+	else
+	 	out(" qack:none");
 
-	if (s->mss)
-		out(" mss:%d", s->mss);
-	if (s->pmtu)
-		out(" pmtu:%u", s->pmtu);
-	if (s->rcv_mss)
-		out(" rcvmss:%d", s->rcv_mss);
-	if (s->advmss)
-		out(" advmss:%d", s->advmss);
-	if (s->cwnd)
-		out(" cwnd:%u", s->cwnd);
-	if (s->ssthresh)
-		out(" ssthresh:%d", s->ssthresh);
+	out(" mss:%d", s->mss);
 
-	if (s->bytes_sent)
-		out(" bytes_sent:%llu", s->bytes_sent);
-	if (s->bytes_retrans)
-		out(" bytes_retrans:%llu", s->bytes_retrans);
-	if (s->bytes_acked)
-		out(" bytes_acked:%llu", s->bytes_acked);
-	if (s->bytes_received)
-		out(" bytes_received:%llu", s->bytes_received);
-	if (s->segs_out)
-		out(" segs_out:%u", s->segs_out);
-	if (s->segs_in)
-		out(" segs_in:%u", s->segs_in);
-	if (s->data_segs_out)
-		out(" data_segs_out:%u", s->data_segs_out);
-	if (s->data_segs_in)
-		out(" data_segs_in:%u", s->data_segs_in);
+	out(" pmtu:%u", s->pmtu);
+
+	out(" rcvmss:%d", s->rcv_mss);
+
+	out(" advmss:%d", s->advmss);
+
+	out(" cwnd:%u", s->cwnd);
+
+	out(" ssthresh:%d", s->ssthresh);
+
+	out(" bytes_sent:%llu", s->bytes_sent);
+
+	out(" bytes_retrans:%llu", s->bytes_retrans);
+
+	out(" bytes_acked:%llu", s->bytes_acked);
+
+	out(" bytes_received:%llu", s->bytes_received);
+
+	out(" segs_out:%u", s->segs_out);
+
+	out(" segs_in:%u", s->segs_in);
+
+	out(" data_segs_out:%u", s->data_segs_out);
+
+	out(" data_segs_in:%u", s->data_segs_in);
 
 	if (s->dctcp && s->dctcp->enabled) {
 		struct dctcpstat *dctcp = s->dctcp;
@@ -2690,76 +2711,78 @@ static void tcp_stats_print(struct tcpstat *s)
 		out(")");
 	}
 
-	if (s->send_bps)
-		out(" send %sbps", sprint_bw(b1, s->send_bps));
-	if (s->lastsnd)
-		out(" lastsnd:%u", s->lastsnd);
-	if (s->lastrcv)
-		out(" lastrcv:%u", s->lastrcv);
-	if (s->lastack)
-		out(" lastack:%u", s->lastack);
+	out(" send:%sbps", sprint_bw(b1, s->send_bps));
 
-	if (s->pacing_rate) {
-		out(" pacing_rate %sbps", sprint_bw(b1, s->pacing_rate));
-		if (s->pacing_rate_max)
-			out("/%sbps", sprint_bw(b1, s->pacing_rate_max));
-	}
+	out(" lastsnd:%u", s->lastsnd);
 
-	if (s->delivery_rate)
-		out(" delivery_rate %sbps", sprint_bw(b1, s->delivery_rate));
-	if (s->delivered)
-		out(" delivered:%u", s->delivered);
-	if (s->delivered_ce)
-		out(" delivered_ce:%u", s->delivered_ce);
+	out(" lastrcv:%u", s->lastrcv);
+
+	out(" lastack:%u", s->lastack);
+
+	out(" pacing_rate:%sbps", sprint_bw(b1, s->pacing_rate));
+	out("/%sbps", sprint_bw(b1, s->pacing_rate_max));
+
+	out(" delivery_rate:%sbps", sprint_bw(b1, s->delivery_rate));
+
+	out(" delivered:%u", s->delivered);
+
+	out(" delivered_ce:%u", s->delivered_ce);
+
 	if (s->app_limited)
-		out(" app_limited");
+		out(" app_limited:yes");
+	else
+		out(" app_limited:no");
 
-	if (s->busy_time) {
-		out(" busy:%llums", s->busy_time / 1000);
-		if (s->rwnd_limited)
-			out(" rwnd_limited:%llums(%.1f%%)",
-			    s->rwnd_limited / 1000,
-			    100.0 * s->rwnd_limited / s->busy_time);
-		if (s->sndbuf_limited)
-			out(" sndbuf_limited:%llums(%.1f%%)",
-			    s->sndbuf_limited / 1000,
-			    100.0 * s->sndbuf_limited / s->busy_time);
-	}
 
-	if (s->unacked)
-		out(" unacked:%u", s->unacked);
-	if (s->retrans || s->retrans_total)
-		out(" retrans:%u/%u", s->retrans, s->retrans_total);
-	if (s->lost)
-		out(" lost:%u", s->lost);
-	if (s->sacked && s->ss.state != SS_LISTEN)
-		out(" sacked:%u", s->sacked);
-	if (s->dsack_dups)
-		out(" dsack_dups:%u", s->dsack_dups);
-	if (s->fackets)
-		out(" fackets:%u", s->fackets);
-	if (s->reordering != 3)
-		out(" reordering:%d", s->reordering);
-	if (s->reord_seen)
-		out(" reord_seen:%d", s->reord_seen);
-	if (s->rcv_rtt)
-		out(" rcv_rtt:%g", s->rcv_rtt);
-	if (s->rcv_space)
-		out(" rcv_space:%d", s->rcv_space);
-	if (s->rcv_ssthresh)
-		out(" rcv_ssthresh:%u", s->rcv_ssthresh);
-	if (s->not_sent)
-		out(" notsent:%u", s->not_sent);
-	if (s->min_rtt)
-		out(" minrtt:%g", s->min_rtt);
-	if (s->rcv_ooopack)
-		out(" rcv_ooopack:%u", s->rcv_ooopack);
-	if (s->snd_wnd)
-		out(" snd_wnd:%u", s->snd_wnd);
-	if (s->rcv_wnd)
-		out(" rcv_wnd:%u", s->rcv_wnd);
-	if (s->rehash)
-		out(" rehash:%u", s->rehash);
+	out(" busy:%llums", s->busy_time / 1000);
+	if (s->rwnd_limited)
+		out(" rwnd_limited:%llums(%.1f%%)",
+			s->rwnd_limited / 1000,
+			100.0 * s->rwnd_limited / s->busy_time);
+	else
+		out(" rwnd_limited:0(0%%)");
+
+	if (s->sndbuf_limited)
+		out(" sndbuf_limited:%llums(%.1f%%)",
+			s->sndbuf_limited / 1000,
+			100.0 * s->sndbuf_limited / s->busy_time);
+	else
+		out(" sndbuf_limited:0(0%%)");
+
+
+	out(" unacked:%u", s->unacked);
+
+	out(" retrans:%u/%u", s->retrans, s->retrans_total);
+
+	out(" lost:%u", s->lost);
+
+	out(" sacked:%u", s->sacked);
+
+	out(" dsack_dups:%u", s->dsack_dups);
+
+	out(" fackets:%u", s->fackets);
+
+	out(" reordering:%d", s->reordering);
+
+	out(" reord_seen:%d", s->reord_seen);
+
+	out(" rcv_rtt:%g", s->rcv_rtt);
+
+	out(" rcv_space:%d", s->rcv_space);
+
+	out(" rcv_ssthresh:%u", s->rcv_ssthresh);
+
+	out(" notsent:%u", s->not_sent);
+
+	out(" minrtt:%g", s->min_rtt);
+
+	out(" rcv_ooopack:%u", s->rcv_ooopack);
+
+	out(" snd_wnd:%u", s->snd_wnd);
+
+	out(" rcv_wnd:%u", s->rcv_wnd);
+
+	out(" rehash:%u", s->rehash);
 }
 
 static void tcp_timer_print(struct tcpstat *s)
